@@ -38,8 +38,8 @@ jobs:
       - name: Run CPD (duplicate code check)
         run: mvn pmd:cpd-check || true
   security-scan:
-    - runs-on: ubuntu-latest
-    - steps:
+    runs-on: ubuntu-latest
+    steps:
       - name: Run OWASP Dependency Check
         run: mvn org.owasp:dependency-check-maven:check || true
 
