@@ -37,6 +37,15 @@ jobs:
 
       - name: Run CPD (duplicate code check)
         run: mvn pmd:cpd-check || true
+  security-scan:
+    - runs-on: ubuntu-latest
+    - steps:
+      - name: Run OWASP Dependency Check
+        run: mvn org.owasp:dependency-check-maven:check || true
+
+      - name: Run SpotBugs with FindSecBugs
+        run: mvn com.github.spotbugs:spotbugs-maven-plugin:check || true
+
 
 #      - name: SonarQube Scan
 #        env:
