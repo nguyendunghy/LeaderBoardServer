@@ -34,6 +34,8 @@ jobs:
       - name: Clean Terraform cache
         run: |
           rm -rf terraform terraform.lock.hcl
+      - name: Remove modules
+        run: rm -rf terraform/modules
       - name: Terraform Init
         run: terraform init -upgrade -input=false
       - name: Show Terraform providers
