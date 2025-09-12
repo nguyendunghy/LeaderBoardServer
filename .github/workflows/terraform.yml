@@ -1,4 +1,4 @@
-name: Terraform EKS Deployment
+name: CI - Terraform EKS Deployment
 
 on:
   push:
