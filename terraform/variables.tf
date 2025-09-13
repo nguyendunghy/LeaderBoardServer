@@ -10,20 +10,20 @@ variable "cluster_name" {
 
 variable "node_instance_types" {
   type    = list(string)
-  default = ["t3.medium"]
+  default = ["t3.small"]
 }
 
 variable "min_size" {
   type    = number
-  default = 2
+  default = 1
 }
 
 variable "max_size" {
   type    = number
-  default = 5
+  default = 2
 }
 
 variable "desired_size" {
   type    = number
-  default = 3
+  default = 1
 }
