@@ -40,7 +40,8 @@ jobs:
         run: terraform init -upgrade -input=false
       - name: Show Terraform providers
         run: terraform providers
-
+      - name: Show log
+        run: grep -R "elastic_gpu_specifications" .terraform/modules/eks
       - name: Terraform Validate
         run: terraform validate
 
