@@ -5,7 +5,7 @@ on:
 #    branches:
 #      - main    # chỉ deploy khi code được merge vào nhánh main
   workflow_run:
-    workflows: ["CI - RealtimeLeaderBoard", "CI- CodeQL - Scan security"]  # list all your CI workflow names
+    workflows: ["CI - RealtimeLeaderBoard", "CI- CodeQL - Scan security","CI - Terraform EKS Deployment"]  # list all your CI workflow names
     types:
       - completed
 jobs:
