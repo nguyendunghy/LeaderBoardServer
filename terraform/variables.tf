@@ -15,13 +15,13 @@ variable "docker_image" {
 variable "vpc_id" {
   description = "VPC ID where ECS will run"
   type        = string
-  default     = "vpc-dungnv93-leaderboard"
+  default     = "vpc-dungnv93leaderboard"
 }
 
 variable "subnets" {
   description = "List of subnets (must be in the given VPC)"
   type        = list(string)
-  default     = ["subnet-dungnv93-1", "subnet-dungnv93-2"]
+  default     = ["subnet-dungnv931", "subnet-dungnv932"]
 }
 
 variable "desired_count" {
