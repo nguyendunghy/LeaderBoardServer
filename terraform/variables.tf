@@ -1,29 +1,34 @@
 variable "aws_region" {
-  type    = string
   default = "ap-southeast-1"
 }
 
-variable "cluster_name" {
-  type    = string
-  default = "my-eks-cluster"
+variable "app_name" {
+  default = "leaderboard-app"
 }
 
-variable "node_instance_types" {
-  type    = list(string)
-  default = ["t3.small"]
+variable "docker_image" {
+  description = "Docker image to deploy (from DockerHub or ECR)"
+  type        = string
 }
 
-variable "min_size" {
-  type    = number
-  default = 1
+variable "vpc_id" {
+  description = "VPC ID where ECS will run"
+  type        = string
 }
 
-variable "max_size" {
-  type    = number
+variable "subnets" {
+  description = "List of subnets (must be in the given VPC)"
+  type        = list(string)
+}
+
+variable "desired_count" {
   default = 2
 }
 
-variable "desired_size" {
-  type    = number
-  default = 1
+variable "cpu" {
+  default = 512
+}
+
+variable "memory" {
+  default = 1024
 }

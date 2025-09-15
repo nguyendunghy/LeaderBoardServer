@@ -1,39 +1,84 @@
-# VPC module
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "5.1.2"
-
-  name = "${var.cluster_name}-vpc"
-  cidr = "10.0.0.0/16"
-
-  azs             = ["${var.aws_region}a", "${var.aws_region}b", "${var.aws_region}c"]
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
-
-  enable_nat_gateway = true
-  single_nat_gateway = true
+# Create ECS Cluster
+resource "aws_ecs_cluster" "this" {
+  name = var.app_name
 }
 
-# EKS module
-module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "21.0"
-#
-  name    = var.cluster_name
-#   cluster_version = "1.29"
+# Create ECS Task Execution Role (needed by Fargate)
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "${var.app_name}-ecs-task-exec-role"
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
+      Principal = {
+        Service = "ecs-tasks.amazonaws.com"
+      }
+    }]
+  })
+}
 
-  enable_irsa = true
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
 
-  eks_managed_node_groups = {
-    default = {
-      min_size     = var.min_size
-      max_size     = var.max_size
-      desired_size = var.desired_size
-      instance_types = var.node_instance_types
-      capacity_type  = "ON_DEMAND"
+# Task Definition (Spring Boot app container)
+resource "aws_ecs_task_definition" "this" {
+  family                   = var.app_name
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = var.cpu
+  memory                   = var.memory
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = var.app_name
+      image     = var.docker_image
+      essential = true
+      portMappings = [
+        {
+          containerPort = 8080
+          hostPort      = 8080
+        }
+      ]
     }
+  ])
+}
+
+# Security Group
+resource "aws_security_group" "ecs_service_sg" {
+  name   = "${var.app_name}-sg"
+  vpc_id = var.vpc_id
+
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# ECS Service
+resource "aws_ecs_service" "this" {
+  name            = var.app_name
+  cluster         = aws_ecs_cluster.this.id
+  task_definition = aws_ecs_task_definition.this.arn
+  desired_count   = var.desired_count
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets          = var.subnets
+    assign_public_ip = true
+    security_groups  = [aws_security_group.ecs_service_sg.id]
   }
 }

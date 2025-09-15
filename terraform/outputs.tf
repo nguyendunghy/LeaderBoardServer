@@ -1,12 +1,11 @@
-output "cluster_name" {
-  value = module.eks.cluster_name
+output "ecs_cluster_id" {
+  value = aws_ecs_cluster.this.id
 }
 
-output "cluster_endpoint" {
-  value = module.eks.cluster_endpoint
+output "ecs_service_name" {
+  value = aws_ecs_service.this.name
 }
 
-output "node_group_arns" {
-  description = "ARNs of managed node groups"
-  value       = module.eks.eks_managed_node_groups
+output "ecs_task_definition_arn" {
+  value = aws_ecs_task_definition.this.arn
 }
