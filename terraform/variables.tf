@@ -15,7 +15,7 @@ variable "docker_image" {
 variable "vpc_id" {
   description = "VPC ID where ECS will run"
   type        = string
-  default     = "vpc-dungnv93leaderboard"
+  default     = "vpc-0396faf722fcf0d09"
 }
 
 variable "subnets" {
