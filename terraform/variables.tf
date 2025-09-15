@@ -21,7 +21,7 @@ variable "vpc_id" {
 variable "subnets" {
   description = "List of subnets (must be in the given VPC)"
   type        = list(string)
-  default     = ["subnet-dungnv931", "subnet-dungnv932"]
+  default     = ["subnet-aaa93", "subnet-bbb93"]
 }
 
 variable "desired_count" {
