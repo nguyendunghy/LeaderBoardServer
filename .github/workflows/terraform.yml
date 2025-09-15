@@ -1,4 +1,4 @@
-name: CI - Terraform EKS Deployment
+name: CI - Terraform ECS Deployment
 
 on:
   push:
