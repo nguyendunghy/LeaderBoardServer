@@ -21,7 +21,7 @@ variable "vpc_id" {
 variable "subnets" {
   description = "List of subnets (must be in the given VPC)"
   type        = list(string)
-  default     = ["subnet-aaa93", "subnet-bbb93"]
+  default     = ["my-eks-cluster-vpc-public-ap-southeast-1a", "my-eks-cluster-vpc-public-ap-southeast-1b","my-eks-cluster-vpc-public-ap-southeast-1c"]
 }
 
 variable "desired_count" {
